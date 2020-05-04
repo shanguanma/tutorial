@@ -18,7 +18,7 @@ Please, refer to https://docs.docker.com/engine/installation/.
 
   `$ cd docker-kaldi-android`
 
-  `$ docker build -t jcsilva/docker-kaldi-android:latest`
+  `$ docker build -t jcsilva/docker-kaldi-android:latest .`
 
 # How to use
 
