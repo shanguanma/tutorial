@@ -109,7 +109,8 @@ shift;
 
 
 最新版本：
-complie for android 8.1(安卓系统的ＣＰＵ架构是arm35，是一个６４位的armv8a指令集的处理器，因为实验这个安卓系统版本是8.1,它对应的系统ＡＰＩ的level是２７) (以下工作都在liunx完成 ，具体liunx系统是ubuntu 16.04):
+complie for android 8.1(安卓系统的ＣＰＵ架构是arm35，是一个６４位的armv8a指令集的处理器，
+因为实验这个安卓系统版本是8.1,它对应的系统ＡＰＩ的level是２７) (以下工作都在liunx完成 ，具体liunx系统是ubuntu 16.04):
 refrence1:https://github.com/jcsilva/docker-kaldi-android/blob/master/Dockerfile
 refrence2:http://jcsilva.github.io/2017/03/18/compile-kaldi-android/
 refrence3：https://blog.csdn.net/qq_33335062/article/details/80918600
@@ -121,7 +122,10 @@ refrence5:https://blog.csdn.net/cs123951/article/details/80054859
 １．下载ＮＤＫ
 wget -q --output-document=android-ndk.zip https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
 ２．unzip  android-ndk.zip 生成android-ndk-r18b文件夹
-# 生成交叉编译工具链/home/md510/w2019a/android-toolchain　，api 27　指的你要运行安卓的版本对应的ＡＰＩ,因为这个例子是想在安卓8.1编译ＫＡＬＤＩ，所以这里指定ＡＰＩ为２7　， 特别注意armv7就用–arch arm，armv8选择–arch arm64，后面的api根据你本地的编译器版本来选择,来自refrence5提示．
+# 生成交叉编译工具链/home/md510/w2019a/android-toolchain　，
+# api 27　指的你要运行安卓的版本对应的ＡＰＩ,因为这个例子是想在安卓8.1编译ＫＡＬＤＩ，
+# 所以这里指定ＡＰＩ为２7　， 特别注意armv7就用–arch arm，armv8选择–arch arm64，
+# 后面的api根据你本地的编译器版本来选择,来自refrence5提示．
 ３．android-ndk-r18b/build/tools/make_standalone_toolchain.py --arch arm64 --api 27 --stl=libc++ --install-dir /home/md510/w2019a/android-toolchain
 
 ４．Compile OpenBLAS for Android
