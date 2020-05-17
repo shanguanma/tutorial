@@ -1,6 +1,6 @@
 
 
-#complie for android 5.1 (liunx :ubuntu 16.04):
+#complie for android 5.1 (liunx :ubuntu 16.04, ubuntu18.04.4 都测试成功):
 
 refrence１:https://github.com/jcsilva/docker-kaldi-android/blob/master/Dockerfile
 
@@ -11,7 +11,9 @@ refrence３：https://blog.csdn.net/qq_33335062/article/details/80918600
 我的工作目录是/home/md510/w2019b，没有特殊说明都在这个目录下操作
 
 就在此工作目录下执行：
+
 １．下载ＮＤＫ
+
 `$ wget -q --output-document=android-ndk.zip https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip`
 
 ２．`$ unzip android-ndk.zip` 生成android-ndk-r16b文件夹
@@ -19,17 +21,23 @@ refrence３：https://blog.csdn.net/qq_33335062/article/details/80918600
 3.  生成交叉编译工具链./my-android-toolchain，
 api 21　指的你要运行安卓的版本对应的ＡＰＩ,因为这个例子是想在安卓５．１编译KALDI，所以这里指定ＡＰＩ为２１　，
 注意．因为咱们生成的my-android-toolchain　是在/tmp下所以ubuntu 系统重启是会消失的，直接开机再执行下面的命令即可
+
 `$ android-ndk-r16b/build/tools/make_standalone_toolchain.py --arch arm --api 21 --stl=libc++ --install-dir ./home/md510/w2019b/my-android-toolchain`
 
 ４．Compile OpenBLAS for Android
-＃Download source
+
+Download source
+
 `$ git clone https://github.com/xianyi/OpenBLAS`
 
-＃Install gfortran
+Install gfortran
+
 `$ sudo apt-get install gfortran`
 
 ５．把交叉编译工具链的路径添加到用户环境变量（~/.bashrc）里面，方便找到．
+
 vim ~/.bashrc
+
 把这三行添加到bashrc里面
 ```
 export ANDROID_TOOLCHAIN_PATH=/home/md510/w2019b/my-android-toolchain
@@ -38,18 +46,21 @@ export CLANG_FLAGS="-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=so
 ```
 
 6.Build for ARMV7 ，ＡＲＭＶ７是安卓系统ＣＰＵ的内核指令集的名字，这个代表ＡＲＭ３２位处理器
+
 `$ cd OpenBLAS`
 `$ make TARGET=ARMV7 ONLY_CBLAS=1 AR=ar CC="clang ${CLANG_FLAGS}" HOSTCC=gcc ARM_SOFTFP_ABI=1 USE_THREAD=0 NUM_THREADS=32 -j4`
 
-＃Install library
-`$ make install NO_SHARED=1 PREFIX=`pwd`/install`
+Install library
+
+```$ make install NO_SHARED=1 PREFIX=`pwd`/install ```
 
 ７．Compile CLAPACK for Android
+
 `$ cd ..`
 `$ git clone https://github.com/simonlynen/android_libs` 
 
-8. `$ cd android_libs/lapack `
- Comment the following four commands
+8. Comment the following four commands
+`$ cd android_libs/lapack `
 `$ sed -i 's/LOCAL_MODULE:= testlapack/#LOCAL_MODULE:= testlapack/g' jni/Android.mk`
 `$ sed -i 's/LOCAL_SRC_FILES:= testclapack.cpp/#LOCAL_SRC_FILES:= testclapack.cpp/g' jni/Android.mk `
 `$ sed -i 's/LOCAL_STATIC_LIBRARIES := lapack/#LOCAL_STATIC_LIBRARIES := lapack/g' jni/Android.mk `
@@ -59,37 +70,34 @@ export CLANG_FLAGS="-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=so
  
 `$ /home/md510/w2019b/android-ndk-r16b/ndk-build`　 
 
-9. Copy libs from obj/local/armeabi-v7a/ to the same place you installed OpenBLAS libraries (
-  e.g: OpenBlas/install/lib). Kaldi 
-  #will look at this directory for libf2c.a, liblapack.a, libclapack.a and libblas.a.
+9. Copy libs from obj/local/armeabi-v7a/ to the same place you installed OpenBLAS libraries
+
+(e.g: OpenBlas/install/lib). Kaldi 
+
+will look at this directory for libf2c.a, liblapack.a, libclapack.a and libblas.a.
   
 `$ cp obj/local/armeabi-v7a/*.a /home/md510/w2019b/OpenBLAS/install/lib`
 
 10.Compile kaldi for Android
 Download kaldi source code
+
 `$ cd ../../ `
 `$ git clone https://github.com/kaldi-asr/kaldi.git kaldi-android`
 
 Compile OpenFST
+
 `$ cd kaldi-android/tools`
 
 10. compile openfst tools
+
 `$ wget -T 10 -t 1 http://www.openslr.org/resources/2/openfst-1.6.5.tar.gz `
-
 `$ tar -zxvf openfst-1.6.5.tar.gz`
-
 `$ cd openfst-1.6.5/`
-
 `$ CXX=clang++ ./configure --prefix=`pwd` --enable-static --enable-shared --enable-far --enable-ngram-fsts --host=arm-linux-androideabi LIBS="-ldl" `
-
 ` $ make -j 4 `
-
 ` $ make install `
-
 ` $ cd ..`
-
 ` $ ln -s openfst-1.6.5 openfst`
-
 ` $ make cub`
 
 11．Compile src
@@ -103,13 +111,15 @@ Be sure android-toolchain is in your $PATH before the next step
 You may want to compile Kaldi without debugging symbols.
 
 In this case, do:
-` $ sed -i 's/-g # -O0 -DKALDI_PARANOID/-O3 -DNDEBUG/g' kaldi.mk `
 
+` $ sed -i 's/-g # -O0 -DKALDI_PARANOID/-O3 -DNDEBUG/g' kaldi.mk `
 ` $ make clean -j 4 `
 ` $ make depend -j 4 `
 ` $ make -j 4 `
 
-12. 去/home/md510/w2019b/my-android-toolchain/arm-linux-androideabi/lib/armv7-a/　找到libc++_shared.so 
+12. 
+```
+去/home/md510/w2019b/my-android-toolchain/arm-linux-androideabi/lib/armv7-a/　找到libc++_shared.so 
 然后把它复制到安卓手机/system/lib　即可
 
 最后生成so文件在kaldi/src/lib中 没找到的话要去改kaldi/src/configure中的这个
@@ -122,7 +132,7 @@ dynamic_kaldi=true; #需要手动改为true，否则不能生成
 MATHLIB='OPENBLAS';
 ANDROIDINC=`read_dirname $1`;
 shift;
-
+```
  
 
 
