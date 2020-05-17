@@ -1,6 +1,7 @@
 
 
-#complie for android 5.1 (liunx :ubuntu 16.04, ubuntu18.04.4 都测试成功):
+# complie for android 5.1 
+liunx :ubuntu 16.04, ubuntu18.04.4 都测试成功):
 
 refrence１:https://github.com/jcsilva/docker-kaldi-android/blob/master/Dockerfile
 
@@ -138,9 +139,8 @@ shift;
 
 
 
-# 最新版本：
-
-complie for android 8.1(安卓系统的ＣＰＵ架构是arm35，是一个６４位的armv8a指令集的处理器，
+# complie for android 8.1 on ubuntu 16.04
+安卓系统的ＣＰＵ架构是arm35，是一个６４位的armv8a指令集的处理器，
 
 因为实验这个安卓系统版本是8.1,它对应的系统ＡＰＩ的level是２７) (以下工作都在liunx完成 ，具体liunx系统是ubuntu 16.04):
 
@@ -336,7 +336,7 @@ make depend -j 12
 然后把它复制到安卓手机/system/lib　即可
 
 
-# 2020-5-17 updated 
+# 2020-5-17 updated complie for android 8.1 on ubuntu 18.04.4
 complie for android 8.1(安卓系统的ＣＰＵ架构是arm35，是一个６４位的armv8a指令集的处理器，
 
 因为实验这个安卓系统版本是8.1,它对应的系统ＡＰＩ的level是２７) (以下工作都在liunx完成 ，具体liunx系统是ubuntu 18.04.4):
