@@ -49,13 +49,13 @@ export CLANG_FLAGS="-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=so
 `$ git clone https://github.com/simonlynen/android_libs` 
 
 8. `$ cd android_libs/lapack `
-# Comment the following four commands
+ Comment the following four commands
 `$ sed -i 's/LOCAL_MODULE:= testlapack/#LOCAL_MODULE:= testlapack/g' jni/Android.mk`
 `$ sed -i 's/LOCAL_SRC_FILES:= testclapack.cpp/#LOCAL_SRC_FILES:= testclapack.cpp/g' jni/Android.mk `
 `$ sed -i 's/LOCAL_STATIC_LIBRARIES := lapack/#LOCAL_STATIC_LIBRARIES := lapack/g' jni/Android.mk `
 `$ sed -i 's/include $(BUILD_SHARED_LIBRARY)/#include $(BUILD_SHARED_LIBRARY)/g' jni/Android.mk`
  
- # at this current folder, run this command
+ At this current folder, run this command
  
 `$ /home/md510/w2019b/android-ndk-r16b/ndk-build`　 
 
@@ -66,14 +66,14 @@ export CLANG_FLAGS="-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=so
 `$ cp obj/local/armeabi-v7a/*.a /home/md510/w2019b/OpenBLAS/install/lib`
 
 10.Compile kaldi for Android
-#Download kaldi source code
+Download kaldi source code
 `$ cd ../../ `
 `$ git clone https://github.com/kaldi-asr/kaldi.git kaldi-android`
 
-#Compile OpenFST
+Compile OpenFST
 `$ cd kaldi-android/tools`
 
-10. # compile openfst tools
+10. compile openfst tools
 `$ wget -T 10 -t 1 http://www.openslr.org/resources/2/openfst-1.6.5.tar.gz `
 
 `$ tar -zxvf openfst-1.6.5.tar.gz`
@@ -96,12 +96,13 @@ export CLANG_FLAGS="-target arm-linux-androideabi -marm -mfpu=vfp -mfloat-abi=so
 
 `$ cd ../src`
 
-#Be sure android-toolchain is in your $PATH before the next step
+Be sure android-toolchain is in your $PATH before the next step
 
 `$ CXX=clang++ ./configure --static --android-incdir=/home/md510/w2019b/my-android-toolchain/sysroot/usr/include/ --host=arm-linux-androideabi --openblas-root=/home/md510/w2019b/OpenBLAS/install `
 
-#You may want to compile Kaldi without debugging symbols.
-#In this case, do:
+You may want to compile Kaldi without debugging symbols.
+
+In this case, do:
 ` $ sed -i 's/-g # -O0 -DKALDI_PARANOID/-O3 -DNDEBUG/g' kaldi.mk `
 
 ` $ make clean -j 4 `
@@ -225,7 +226,7 @@ APP_CPPFLAGS := -frtti -fexceptions -mfloat-abi=softfp -mfpu=neon -std=gnu++0x -
 APP_ABI := arm64-v8a　　# build for android (v8 指令集)　
 APP_OPTIM := release
 ```
-
+```
 修改AndroidManifest.xml
 
 把＇<uses-sdk android:minSdkVersion="10" />＇　中的数字10　改为27 因为我们的安卓系统api 是27
@@ -233,6 +234,7 @@ APP_OPTIM := release
 修改project.properties
 
 把target=android-10　改为target=android-27
+```
 
 在当前路径下执行下面命令：
 
@@ -241,14 +243,13 @@ APP_OPTIM := release
 就会在当前路径下生成 obj/local/arm64-v8a/*.a　＃*表示.a 的名字，由于太多所以用* 代替来展示
 
 把编译生成的库复制到 /home/md510/w2019a/OpenBLAS/install/lib　，这里/home/md510/w2019a/OpenBLAS/　下面的install 文件夹是在第四步．
-
 Compile OpenBLAS for Android中最后一个命令　make PREFIX=$(pwd)/install  TARGET=ARMV8 install 指定的，你也可指定别的目录．
 
-cp obj/local/arm64-v8a/*.a /home/md510/w2019a/OpenBLAS/install/lib
+`$ cp obj/local/arm64-v8a/*.a /home/md510/w2019a/OpenBLAS/install/lib `
 
 
 ６．Compile kaldi for Android
-#Download kaldi source code
+Download kaldi source code
 
 `$ cd ../../ `
 
@@ -257,7 +258,7 @@ cp obj/local/arm64-v8a/*.a /home/md510/w2019a/OpenBLAS/install/lib
 vim ~/.bashrc
 
 添加以下命令　为了编译OpenFST
-# Tell configure what tools to use.
+Tell configure what tools to use.
 ```
 target_host=aarch64-linux-android
 export AR=$target_host-ar
@@ -271,7 +272,7 @@ export STRIP=${target_host}-strip
 
 Compile OpenFST
 
-`$ cd kaldi-android/tools `
+` $ cd kaldi-android/tools `
 ` $ wget -T 10 -t 1 http://www.openslr.org/resources/2/openfst-1.6.7.tar.gz `
 ` $ tar -zxvf openfst-1.6.7.tar.gz `
 ` $ cd openfst-1.6.7/ `
@@ -288,13 +289,14 @@ Compile OpenFST
 
 `$ CXX=clang++  ./configure --static --android-incdir=/home/md510/w2019a/android-toolchain/sysroot/usr/include/ --host=aarch64-linux-android --openblas-root=/home/md510/w2019a/OpenBLAS/install `
 
+```
 然后才能生成一个kaldi.mk
 然后可能提示:
 ***configure failed: Could not find file /cub/cub.cuh:
   you may not have installed cub.  Go to ../tools/ and type
   e.g. 'make cub'; cub is a new requirement. ***
 
-
+```
 然后你执行：
 `$ cd ..`
 `$ cd tools `
@@ -304,15 +306,17 @@ Compile OpenFST
 `$ cd ../src `
 `$ CXX=clang++  ./configure --static --android-incdir=/home/md510/w2019a/android-toolchain/sysroot/usr/include/ --host=aarch64-linux-android --openblas-root=/home/md510/w2019a/OpenBLAS/install `
 
-#You may want to compile Kaldi without debugging symbols.
-#In this case, do:
+You may want to compile Kaldi without debugging symbols.
+In this case, do:
 `$ sed -i 's/-g # -O0 -DKALDI_PARANOID/-O3 -DNDEBUG/g' kaldi.mk `
 
+```
 修改kaldi.mk
 删除
 -mfloat-abi=softfp -mfpu=neon 
 添加
 -march=arm64v8-a
+```
 ```
 make clean -j 12
 make depend -j 12
